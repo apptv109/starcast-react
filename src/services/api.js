@@ -1,32 +1,42 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+// WordPress REST API base URL - update this to your WordPress site URL
+const WP_API_BASE_URL = process.env.REACT_APP_WP_API_URL || 'https://starcast.co.za/wp-json';
 
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: WP_API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Package services
+// Package services using WordPress REST API
 export const packageService = {
-  getFibrePackages: () => api.get('/api/packages/fibre'),
-  getLTEPackages: () => api.get('/api/packages/lte'),
-  getPackageById: (id) => api.get(`/api/packages/${id}`),
+  getFibrePackages: () => api.get('/starcast/v1/packages/fibre'),
+  getLTEPackages: () => api.get('/starcast/v1/packages/lte'),
+  getPackageById: (id) => api.get(`/wp/v2/fibre_packages/${id}`), // WordPress default endpoint
 };
 
-// Booking services
+// Booking services using WordPress REST API
 export const bookingService = {
-  createBooking: (bookingData) => api.post('/api/bookings', bookingData),
-  getBookings: () => api.get('/api/bookings'),
-  getBookingById: (id) => api.get(`/api/bookings/${id}`),
+  createBooking: (bookingData) => api.post('/starcast/v1/bookings', bookingData),
+  checkAvailability: (date) => api.get(`/starcast/v1/bookings/availability/${date}`),
 };
 
-// Promo services
-export const promoService = {
-  getActivePromos: () => api.get('/api/promos/active'),
-  getPromoById: (id) => api.get(`/api/promos/${id}`),
+// Signup services using WordPress REST API
+export const signupService = {
+  createSignup: (signupData) => api.post('/starcast/v1/signup', signupData),
 };
 
-export default api; 
+// Contact form service using WordPress REST API
+export const contactService = {
+  sendContactEmail: (contactData) => api.post('/starcast/v1/contact', contactData),
+};
+
+// Default export for backward compatibility
+export default {
+  packageService,
+  bookingService,
+  signupService,
+  contactService,
+}; 
