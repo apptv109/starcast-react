@@ -18,6 +18,9 @@
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  /* Improved touch target for mobile */
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .package-card::before {
@@ -251,28 +254,30 @@
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .package-card {
-    max-width: 98vw;
-    padding: 12px 6vw 10px 6vw;
+    max-width: 100%;
+    padding: 20px 16px;
+    border-radius: 16px;
   }
   
   .package-provider-logo {
-    max-width: 40px;
-    max-height: 20px;
+    max-width: 45px;
+    max-height: 22px;
     margin-bottom: 8px;
   }
   
   .package-provider-name {
-    font-size: 0.8rem;
-    margin-bottom: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
   }
   
   .package-price-badge {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     padding: 4px 6px;
+    margin-bottom: 8px;
   }
   
   .package-price-badge .currency {
-    font-size: 1rem;
+    font-size: 1.1rem;
     top: 1px;
   }
   
@@ -297,13 +302,54 @@
   
   .package-feature-badge {
     font-size: 0.75rem;
-    padding: 3px 10px;
+    padding: 4px 10px;
+  }
+  
+  .promo-badge {
+    top: -8px;
+    right: -8px;
+    padding: 3px 6px;
+    font-size: 0.65rem;
+  }
+  
+  .fibre-promo-text {
+    font-size: 0.65rem;
+    padding: 4px 8px;
+    margin-top: 6px;
   }
 }
 
 @media (max-width: 480px) {
   .package-card {
-    padding: 10px 2vw 8px 2vw;
+    padding: 16px 12px;
+    border-radius: 14px;
+  }
+  
+  .package-provider-logo {
+    max-width: 40px;
+    max-height: 20px;
+    margin-bottom: 6px;
+  }
+  
+  .package-provider-name {
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+  
+  .package-price-badge {
+    font-size: 1.5rem;
+    padding: 3px 5px;
+    margin-bottom: 6px;
+  }
+  
+  .package-price-badge .currency {
+    font-size: 1rem;
+    top: 1px;
+  }
+  
+  .package-price-badge small {
+    font-size: 0.55rem;
+    top: -2px;
   }
   
   .speeds-inline {
@@ -316,18 +362,124 @@
     gap: 25px;
   }
   
-  .package-price-badge {
-    font-size: 1.4rem;
-    padding: 3px 5px;
+  .package-feature-badge {
+    font-size: 0.7rem;
+    padding: 3px 8px;
   }
   
+  .promo-badge {
+    top: -6px;
+    right: -6px;
+    padding: 2px 5px;
+    font-size: 0.6rem;
+  }
+  
+  .fibre-promo-text {
+    font-size: 0.6rem;
+    padding: 3px 6px;
+    margin-top: 5px;
+  }
+}
+
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 375px) {
+  .package-card {
+    padding: 14px 10px;
+    border-radius: 12px;
+  }
+
+  .package-provider-logo {
+    max-width: 35px;
+    max-height: 18px;
+    margin-bottom: 5px;
+  }
+
+  .package-provider-name {
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+  }
+
+  .package-price-badge {
+    font-size: 1.4rem;
+    padding: 2px 4px;
+    margin-bottom: 5px;
+  }
+
   .package-price-badge .currency {
     font-size: 0.95rem;
     top: 1px;
   }
-  
+
   .package-price-badge small {
+    font-size: 0.5rem;
+    top: -2px;
+  }
+
+  .package-speeds-row {
+    margin-bottom: 5px;
+  }
+
+  .speeds-inline {
+    font-size: 0.8rem;
+    gap: 2px;
+  }
+
+  .speed-labels-inline {
     font-size: 0.55rem;
-    top: -3px;
+    gap: 20px;
+  }
+
+  .package-feature-badge {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+  }
+
+  .promo-badge {
+    top: -5px;
+    right: -5px;
+    padding: 2px 4px;
+    font-size: 0.55rem;
+  }
+
+  .fibre-promo-text {
+    font-size: 0.55rem;
+    padding: 2px 5px;
+    margin-top: 4px;
+  }
+}
+
+/* Touch-friendly improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .package-card:hover {
+    transform: none;
+  }
+
+  .package-card:active {
+    transform: scale(0.98);
+    background: rgba(250, 247, 244, 0.9);
+  }
+
+  .package-card:active::before {
+    opacity: 1;
+  }
+}
+
+/* Landscape orientation adjustments for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .package-card {
+    padding: 12px 10px;
+  }
+
+  .package-provider-logo {
+    max-width: 35px;
+    max-height: 18px;
+  }
+
+  .package-price-badge {
+    font-size: 1.4rem;
+  }
+
+  .speeds-inline {
+    font-size: 0.85rem;
   }
 } 

@@ -12,6 +12,9 @@ const FibrePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
   const providerSliderRef = useRef(null);
 
   // Define allowed providers in the exact order we want them displayed
@@ -19,7 +22,21 @@ const FibrePage = () => {
 
   useEffect(() => {
     fetchFibrePackages();
+    checkMobileDevice();
+    
+    // Add resize listener for mobile detection
+    const handleResize = () => {
+      checkMobileDevice();
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const checkMobileDevice = () => {
+    const mobile = window.innerWidth <= 768;
+    setIsMobile(mobile);
+  };
 
   const fetchFibrePackages = async () => {
     try {
@@ -209,6 +226,61 @@ const FibrePage = () => {
     }
   };
 
+  // Enhanced mobile-specific touch handling for provider slider
+  const handleSliderScroll = () => {
+    if (!providerSliderRef.current || isScrolling) return;
+    
+    const slider = providerSliderRef.current;
+    const scrollLeft = slider.scrollLeft;
+    const cardWidth = isMobile ? 260 + 15 : 300 + 20; // card width + gap
+    const newIndex = Math.round(scrollLeft / cardWidth);
+    
+    if (newIndex !== currentProviderIndex && newIndex >= 0 && newIndex < providers.length) {
+      setCurrentProviderIndex(newIndex);
+    }
+  };
+
+  // Touch gesture handling for swipe navigation
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      handleNextProvider();
+    } else if (isRightSwipe) {
+      handlePrevProvider();
+    }
+  };
+
+  // Add haptic feedback for mobile devices
+  const triggerHapticFeedback = () => {
+    if ('vibrate' in navigator && isMobile) {
+      navigator.vibrate(10);
+    }
+  };
+
+  const handleProviderSelectWithFeedback = (index) => {
+    triggerHapticFeedback();
+    handleProviderSelect(index);
+  };
+
+  const handlePackageSelectWithFeedback = (pkg) => {
+    triggerHapticFeedback();
+    handlePackageSelect(pkg);
+  };
+
   if (loading) {
     return (
       <div className="fibre-page">
@@ -255,7 +327,12 @@ const FibrePage = () => {
           
           {providers.length > 0 ? (
             <>
-              <div className="provider-selector">
+              <div 
+                className="provider-selector"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
                 <button 
                   className="nav-arrow nav-prev" 
                   onClick={handlePrevProvider}
@@ -266,12 +343,16 @@ const FibrePage = () => {
                   </svg>
                 </button>
                 
-                <div className="provider-slider" ref={providerSliderRef}>
+                <div 
+                  className="provider-slider" 
+                  ref={providerSliderRef}
+                  onScroll={isMobile ? handleSliderScroll : undefined}
+                >
                   {providers.map((provider, index) => (
                     <div
                       key={provider.slug}
                       className={`provider-card ${index === currentProviderIndex ? 'active' : ''}`}
-                      onClick={() => handleProviderSelect(index)}
+                      onClick={() => handleProviderSelectWithFeedback(index)}
                     >
                       {provider.logo ? (
                         <img 
@@ -302,7 +383,7 @@ const FibrePage = () => {
                   <div
                     key={index}
                     className={`indicator ${index === currentProviderIndex ? 'active' : ''}`}
-                    onClick={() => handleProviderSelect(index)}
+                    onClick={() => handleProviderSelectWithFeedback(index)}
                   />
                 ))}
               </div>
@@ -314,7 +395,7 @@ const FibrePage = () => {
                       key={pkg.id}
                       package={pkg}
                       provider={currentProvider}
-                      onSelect={handlePackageSelect}
+                      onSelect={handlePackageSelectWithFeedback}
                     />
                   ))
                 ) : (
