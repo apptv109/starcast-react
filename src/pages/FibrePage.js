@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { wordpressApiService } from '../services/wordpress-api';
 import PackageCard from '../components/common/PackageCard';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import './FibrePage.css';
 
 const FibrePage = () => {
+  const navigate = useNavigate();
   const [providers, setProviders] = useState([]);
   const [currentProviderIndex, setCurrentProviderIndex] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -198,11 +200,12 @@ const FibrePage = () => {
       
       sessionStorage.setItem('selectedPackage', JSON.stringify(selectedPackage));
       
-      // Navigate to signup page
-      window.location.href = `https://starcast.co.za/signup/?package_id=${pkg.id}`;
+      // Navigate to React signup page instead of WordPress
+      navigate(`/signup?package_id=${pkg.id}`);
     } catch (error) {
       console.error('Error storing package:', error);
-      window.location.href = `https://starcast.co.za/signup/?package_id=${pkg.id}`;
+      // Fallback to React signup page
+      navigate(`/signup?package_id=${pkg.id}`);
     }
   };
 
