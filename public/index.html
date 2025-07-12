@@ -3,17 +3,94 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    
+    <!-- Enhanced Mobile Viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    
+    <!-- App-like Mobile Features -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Starcast">
+    <meta name="application-name" content="Starcast">
+    
+    <!-- Theme Colors -->
+    <meta name="theme-color" content="#d67d3e" />
+    <meta name="msapplication-TileColor" content="#d67d3e">
+    <meta name="msapplication-navbutton-color" content="#d67d3e">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Enhanced SEO -->
     <meta
       name="description"
-      content="Starcast Technologies - Your trusted ISP delivering lightning-fast fibre and LTE internet solutions"
+      content="Starcast Technologies - Your trusted ISP delivering lightning-fast fibre and LTE internet solutions. Get the best mobile data packages from Vodacom, MTN, and Telkom."
     />
+    <meta name="keywords" content="ISP, internet, fibre, LTE, 5G, mobile data, Vodacom, MTN, Telkom, South Africa">
+    <meta name="author" content="Starcast Technologies">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Starcast Technologies - Fast Internet Solutions">
+    <meta property="og:description" content="Lightning-fast fibre and LTE internet solutions with no contracts and no hassle.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="%PUBLIC_URL%/logo192.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Starcast Technologies">
+    <meta name="twitter:description" content="Fast, reliable internet connectivity for home and business.">
+    
+    <!-- App Icons -->
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="apple-touch-icon" sizes="57x57" href="%PUBLIC_URL%/logo192.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="%PUBLIC_URL%/logo192.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="%PUBLIC_URL%/logo192.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="%PUBLIC_URL%/logo192.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="%PUBLIC_URL%/logo192.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="%PUBLIC_URL%/logo192.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="%PUBLIC_URL%/logo192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="%PUBLIC_URL%/logo192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/logo192.png">
+    
+    <!-- Manifest -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Optimized Font Loading -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <title>Starcast Technologies</title>
+    
+    <title>Starcast Technologies - Fast Internet Solutions</title>
+    
+    <!-- Mobile Performance Optimization -->
+    <script>
+      // Mobile viewport height fix for iOS Safari
+      function setVH() {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty('--vh', `${vh}px`);
+      }
+      
+      setVH();
+      window.addEventListener('resize', setVH);
+      window.addEventListener('orientationchange', setVH);
+      
+      // Prevent zoom on double tap for better mobile UX
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', function (event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false);
+      
+      // Add touch-device class for CSS
+      if ('ontouchstart' in window) {
+        document.documentElement.classList.add('touch-device');
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

@@ -5,6 +5,15 @@
   padding: 0;
 }
 
+/* Enhanced Mobile-First Styling */
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 body {
   margin: 0;
   font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -16,6 +25,9 @@ body {
   background-attachment: fixed;
   color: #4a453f;
   line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
 }
 
 code {
@@ -35,6 +47,7 @@ code {
   --white: #ffffff;
   --card-shadow: 0 8px 32px rgba(74, 69, 63, 0.1);
   --card-border: 1px solid rgba(232, 227, 219, 0.3);
+  --vh: 1vh;
 }
 
 /* Global Styles */
@@ -45,78 +58,270 @@ code {
   padding: 0 24px;
 }
 
-/* Button Styles */
+/* Enhanced Button Styles */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 16px 32px;
-  border-radius: 8px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
   font-weight: 600;
   text-decoration: none;
-  transition: all 0.2s ease;
   cursor: pointer;
-  font-size: 1rem;
-  line-height: 1.5;
-  border: none;
-  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-height: 48px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  right: 100%;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s;
+}
+
+.btn:hover::before {
+  left: 100%;
+  right: -100%;
 }
 
 .btn-primary {
-  background: var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color-dark) 100%);
   color: var(--white);
-  box-shadow: 0 4px 14px 0 rgba(214, 125, 62, 0.25);
+  box-shadow: 0 4px 16px rgba(214, 125, 62, 0.25);
 }
 
 .btn-primary:hover {
-  background: var(--primary-color-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px 0 rgba(214, 125, 62, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(214, 125, 62, 0.35);
 }
 
 .btn-secondary {
-  background: #f4f1ec;
-  color: #4a453f;
-  border: 2px solid #e8e3db;
+  background: var(--white);
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  box-shadow: 0 4px 16px rgba(74, 69, 63, 0.1);
 }
 
 .btn-secondary:hover {
-  background: #ede8e0;
-  border-color: #ddd6cb;
-  transform: translateY(-1px);
+  background: var(--primary-color);
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(214, 125, 62, 0.25);
 }
 
-/* Loading Spinner */
+/* Enhanced Loading Spinner */
 .loading-spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px;
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(214, 125, 62, 0.1);
+  border-left-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
 }
 
 .loading-spinner::after {
   content: '';
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid var(--primary-color);
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin: 12px;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  background: var(--primary-color);
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-/* Responsive Design */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}
+
+/* Touch Device Optimizations */
+.touch-device .btn:hover {
+  transform: none;
+  box-shadow: 0 4px 16px rgba(214, 125, 62, 0.25);
+}
+
+.touch-device .btn:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+.touch-device .btn-primary:hover {
+  box-shadow: 0 4px 16px rgba(214, 125, 62, 0.25);
+}
+
+.touch-device .btn-secondary:hover {
+  background: var(--white);
+  color: var(--primary-color);
+  box-shadow: 0 4px 16px rgba(74, 69, 63, 0.1);
+}
+
+/* Responsive Typography */
 @media (max-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+
   .container {
     padding: 0 16px;
   }
-  
+
   .btn {
-    padding: 14px 24px;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 0 12px;
+  }
+
+  .btn {
+    padding: 10px 20px;
     font-size: 0.9rem;
+    min-height: 40px;
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border-width: 3px;
+  }
+
+  .loading-spinner::after {
+    width: 12px;
+    height: 12px;
+    margin: 10px;
+  }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  body {
+    background-attachment: scroll;
+  }
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .loading-spinner {
+    animation: none;
+    border-left-color: var(--primary-color);
+    transform: rotate(45deg);
+  }
+
+  .loading-spinner::after {
+    animation: none;
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .btn-primary {
+    background: #000000;
+    border: 2px solid #000000;
+  }
+
+  .btn-secondary {
+    background: #ffffff;
+    color: #000000;
+    border: 3px solid #000000;
+  }
+
+  .loading-spinner {
+    border-color: #000000;
+    border-left-color: #000000;
+  }
+}
+
+/* Focus improvements for keyboard navigation */
+.btn:focus-visible {
+  outline: 3px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-dark: #f0f0f0;
+    --text-light: #a0a0a0;
+    --bg-light: #1a1a1a;
+    --border-color: #333333;
+    --white: rgba(255, 255, 255, 0.1);
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  body {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 30%, #1f1f1f 70%, #1a1a1a 100%);
+    color: var(--text-dark);
+  }
+
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .btn {
+    border: 1px solid black !important;
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+
+  .loading-spinner {
+    display: none !important;
   }
 } 
