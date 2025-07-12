@@ -13,7 +13,7 @@ const FibrePage = () => {
   const providerSliderRef = useRef(null);
 
   // Define allowed providers in the exact order we want them displayed
-  const allowedProviders = ['openserve', 'octotel', 'frogfoot', 'vuma', 'metrofibre', 'metrofibre-north', 'metrofibre-south'];
+  const allowedProviders = ['openserve', 'octotel', 'frogfoot', 'vuma', 'metrofibre', 'metrofibre-north', 'metrofibre-south', 'pphg', 'lightstruck'];
 
   useEffect(() => {
     fetchFibrePackages();
@@ -24,8 +24,11 @@ const FibrePage = () => {
       setLoading(true);
       const response = await wordpressApiService.getFibrePackages();
       
+      console.log('API Response:', response.data); // Debug log
+      
       if (response.data && response.data.success && response.data.data) {
         const packages = response.data.data;
+        console.log('Packages received:', packages); // Debug log
         const groupedProviders = groupPackagesByProvider(packages);
         setProviders(groupedProviders);
       } else {
@@ -43,6 +46,8 @@ const FibrePage = () => {
     const grouped = {};
     
     packages.forEach(pkg => {
+      console.log('Processing package:', pkg); // Debug log
+      
       // Extract provider name from package title or use a default grouping logic
       const providerName = extractProviderName(pkg.title) || 'Other';
       const providerSlug = providerName.toLowerCase().replace(/\s+/g, '-');
@@ -56,17 +61,30 @@ const FibrePage = () => {
         };
       }
       
-      grouped[providerSlug].packages.push({
+      // Map the package data with proper field names from WordPress API
+      const mappedPackage = {
         ...pkg,
-        download_speed: parseInt(pkg.speed?.replace(/[^0-9]/g, '') || '0'),
+        // Map speed fields - API returns 'speed' field which contains download speed
+        download_speed_value: extractSpeedValue(pkg.speed || pkg.download || '0'),
+        upload_speed_value: extractSpeedValue(pkg.upload_speed || pkg.upload || pkg.speed || '0'),
+        // Keep original fields for display
+        download_display: pkg.speed || pkg.download || 'N/A',
+        upload_display: pkg.upload_speed || pkg.upload || pkg.speed || 'N/A',
+        // Handle pricing
         has_promo: pkg.promo_price && pkg.promo_price !== pkg.price,
-        effective_price: pkg.promo_price || pkg.price
-      });
+        effective_price: pkg.promo_price || pkg.price,
+        // Ensure we have the data field
+        data_display: pkg.data || 'Unlimited'
+      };
+      
+      console.log('Mapped package:', mappedPackage); // Debug log
+      
+      grouped[providerSlug].packages.push(mappedPackage);
     });
 
     // Sort packages within each provider by download speed
     Object.values(grouped).forEach(provider => {
-      provider.packages.sort((a, b) => a.download_speed - b.download_speed);
+      provider.packages.sort((a, b) => a.download_speed_value - b.download_speed_value);
     });
 
     // Filter and sort providers according to allowed list
@@ -96,6 +114,7 @@ const FibrePage = () => {
       }
     });
 
+    console.log('Final grouped providers:', filteredProviders); // Debug log
     return filteredProviders.sort((a, b) => a.priority - b.priority);
   };
 
@@ -112,6 +131,13 @@ const FibrePage = () => {
     // If no known provider found, try to extract from title
     const parts = title.split(' ');
     return parts[0] || 'Other';
+  };
+
+  const extractSpeedValue = (speedString) => {
+    // Extract numeric value from speed string (e.g., "100Mbps" -> 100)
+    if (!speedString) return 0;
+    const match = String(speedString).match(/(\d+)/);
+    return match ? parseInt(match[1]) : 0;
   };
 
   const handleProviderSelect = (index) => {
@@ -161,12 +187,14 @@ const FibrePage = () => {
     try {
       const selectedPackage = {
         id: pkg.id,
-        name: `${providers[currentProviderIndex].name} ${pkg.speed}`,
+        name: `${providers[currentProviderIndex].name} ${pkg.download_display}`,
         price: pkg.effective_price || pkg.price,
         provider: providers[currentProviderIndex].name,
-        download: pkg.speed,
-        upload: pkg.upload_speed || pkg.speed
+        download: pkg.download_display,
+        upload: pkg.upload_display
       };
+      
+      console.log('Selected package:', selectedPackage); // Debug log
       
       sessionStorage.setItem('selectedPackage', JSON.stringify(selectedPackage));
       

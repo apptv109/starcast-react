@@ -10,14 +10,16 @@ const PackageCard = ({ package: pkg, provider, onSelect }) => {
     }
   };
 
-  // Extract speed information
+  // Extract speed information from the mapped package data
   const getSpeedDisplay = (speed) => {
     if (!speed) return 'N/A';
+    // Remove 'Mbps' suffix if present and return clean number
     return String(speed).replace(/\s*Mbps/i, '');
   };
 
-  const downloadSpeed = getSpeedDisplay(pkg.speed || pkg.download);
-  const uploadSpeed = getSpeedDisplay(pkg.upload_speed || pkg.upload || pkg.speed);
+  // Use the mapped display fields
+  const downloadSpeed = getSpeedDisplay(pkg.download_display || pkg.speed || pkg.download);
+  const uploadSpeed = getSpeedDisplay(pkg.upload_display || pkg.upload_speed || pkg.upload || pkg.speed);
 
   // Handle pricing
   const originalPrice = pkg.price;
@@ -76,6 +78,17 @@ const PackageCard = ({ package: pkg, provider, onSelect }) => {
     );
   };
 
+  // Debug logging
+  console.log('PackageCard rendering:', {
+    title: pkg.title,
+    downloadSpeed,
+    uploadSpeed,
+    originalPrice,
+    promoPrice,
+    hasPromo,
+    pkg
+  });
+
   return (
     <div 
       className={`package-card ${hasPromo ? 'has-promo' : ''}`}
@@ -110,7 +123,7 @@ const PackageCard = ({ package: pkg, provider, onSelect }) => {
       </div>
       
       <div className="package-feature-badge">
-        {pkg.data || 'Uncapped'}
+        {pkg.data_display || pkg.data || 'Uncapped'}
       </div>
       
       {renderPromoText()}
