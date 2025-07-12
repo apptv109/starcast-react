@@ -1,0 +1,408 @@
+/* Mobile Carousel Styles */
+.mobile-carousel {
+  position: relative;
+  width: 100%;
+  margin: 20px 0;
+  padding: 0 20px;
+}
+
+/* Swiper Container */
+.provider-swiper {
+  width: 100%;
+  height: auto;
+  padding: 20px 0 60px 0; /* Extra padding for pagination */
+  overflow: visible;
+}
+
+.provider-slide {
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Provider Card Mobile */
+.provider-card-mobile {
+  background: var(--white);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(74, 69, 63, 0.08);
+  border: 2px solid var(--border-color);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  min-height: 160px;
+  width: 100%;
+  max-width: 280px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.provider-card-mobile:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(74, 69, 63, 0.15);
+  border-color: var(--primary-color);
+}
+
+.provider-card-mobile.active {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 20px 48px rgba(214, 125, 62, 0.25);
+  border-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--white) 0%, #faf9f8 100%);
+}
+
+.provider-card-mobile.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(214, 125, 62, 0.1) 0%, rgba(214, 125, 62, 0.05) 100%);
+  pointer-events: none;
+}
+
+.provider-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  z-index: 2;
+  position: relative;
+}
+
+/* Provider Logo */
+.provider-logo-mobile {
+  width: 80px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 12px;
+  transition: transform 0.3s ease;
+}
+
+.provider-card-mobile:hover .provider-logo-mobile {
+  transform: scale(1.1);
+}
+
+.provider-card-mobile.active .provider-logo-mobile {
+  transform: scale(1.15);
+}
+
+/* Provider Text Fallback */
+.provider-text-mobile {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Provider Name */
+.provider-name-mobile {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.provider-card-mobile.active .provider-name-mobile {
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+/* Package Count */
+.provider-packages-count {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  font-weight: 500;
+  padding: 4px 12px;
+  background: rgba(214, 125, 62, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(214, 125, 62, 0.2);
+}
+
+.provider-card-mobile.active .provider-packages-count {
+  background: rgba(214, 125, 62, 0.15);
+  border-color: rgba(214, 125, 62, 0.3);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Active Indicator */
+.active-indicator {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 16px;
+  height: 16px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  border: 3px solid var(--white);
+  box-shadow: 0 2px 8px rgba(214, 125, 62, 0.4);
+  z-index: 3;
+}
+
+/* Navigation Buttons */
+.carousel-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  background: var(--white);
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(74, 69, 63, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.carousel-button:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 20px rgba(214, 125, 62, 0.3);
+}
+
+.carousel-button:hover svg {
+  color: var(--white);
+}
+
+.carousel-button svg {
+  width: 20px;
+  height: 20px;
+  color: var(--text-light);
+  transition: color 0.3s ease;
+}
+
+.carousel-button-prev {
+  left: -10px;
+}
+
+.carousel-button-next {
+  right: -10px;
+}
+
+/* Swiper Pagination */
+.provider-swiper .swiper-pagination {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+}
+
+.provider-swiper .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  background: rgba(214, 125, 62, 0.3);
+  opacity: 1;
+  margin: 0 4px;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+}
+
+.provider-swiper .swiper-pagination-bullet-active {
+  background: var(--primary-color);
+  transform: scale(1.5);
+  width: 20px;
+  border-radius: 10px;
+}
+
+/* Dynamic Bullets */
+.provider-swiper .swiper-pagination-bullet-active-main {
+  background: var(--primary-color);
+}
+
+.provider-swiper .swiper-pagination-bullet-active-prev,
+.provider-swiper .swiper-pagination-bullet-active-next {
+  background: rgba(214, 125, 62, 0.5);
+  transform: scale(1.2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .mobile-carousel {
+    padding: 0 16px;
+    margin: 16px 0;
+  }
+
+  .provider-swiper {
+    padding: 16px 0 50px 0;
+  }
+
+  .provider-card-mobile {
+    padding: 20px 16px;
+    border-radius: 16px;
+    min-height: 140px;
+    max-width: 260px;
+  }
+
+  .provider-logo-mobile {
+    width: 70px;
+    height: 50px;
+    margin-bottom: 10px;
+  }
+
+  .provider-name-mobile {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  .provider-packages-count {
+    font-size: 0.8rem;
+    padding: 3px 10px;
+  }
+
+  .carousel-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .carousel-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .carousel-button-prev {
+    left: -8px;
+  }
+
+  .carousel-button-next {
+    right: -8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-carousel {
+    padding: 0 12px;
+    margin: 12px 0;
+  }
+
+  .provider-swiper {
+    padding: 12px 0 45px 0;
+  }
+
+  .provider-card-mobile {
+    padding: 18px 14px;
+    border-radius: 14px;
+    min-height: 130px;
+    max-width: 240px;
+  }
+
+  .provider-logo-mobile {
+    width: 60px;
+    height: 45px;
+    margin-bottom: 8px;
+  }
+
+  .provider-name-mobile {
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+
+  .provider-text-mobile {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+
+  .provider-packages-count {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+  }
+
+  .carousel-button {
+    width: 36px;
+    height: 36px;
+    box-shadow: 0 2px 12px rgba(74, 69, 63, 0.15);
+  }
+
+  .carousel-button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .carousel-button-prev {
+    left: -6px;
+  }
+
+  .carousel-button-next {
+    right: -6px;
+  }
+
+  .active-indicator {
+    width: 14px;
+    height: 14px;
+    border-width: 2px;
+  }
+}
+
+/* Touch Improvements */
+@media (hover: none) and (pointer: coarse) {
+  .provider-card-mobile:hover {
+    transform: none;
+    box-shadow: 0 8px 24px rgba(74, 69, 63, 0.08);
+    border-color: var(--border-color);
+  }
+
+  .provider-card-mobile:active {
+    transform: scale(0.98);
+  }
+
+  .carousel-button:hover {
+    background: var(--white);
+    border-color: var(--border-color);
+    transform: translateY(-50%);
+    box-shadow: 0 4px 16px rgba(74, 69, 63, 0.1);
+  }
+
+  .carousel-button:hover svg {
+    color: var(--text-light);
+  }
+
+  .carousel-button:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+}
+
+/* Accessibility */
+.provider-card-mobile:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.carousel-button:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Loading State */
+.provider-card-mobile.loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

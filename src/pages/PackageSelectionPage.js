@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { isMobile, isTablet } from 'react-device-detect';
 import { packageService } from '../services/api';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import LTEPackageCard from '../components/common/LTEPackageCard';
+import MobileCarousel from '../components/common/MobileCarousel';
+import MobileLTEPackageCard from '../components/common/MobileLTEPackageCard';
 import './PackageSelectionPage.css';
 
 const PackageSelectionPage = () => {
@@ -12,18 +16,39 @@ const PackageSelectionPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const providerSliderRef = useRef(null);
 
   // Define provider order
   const providerOrder = ['Vodacom', 'MTN', 'Telkom'];
 
+  // Detect if mobile/tablet for better UX
+  const isMobileDevice = isMobile || isTablet;
+
   useEffect(() => {
     fetchLTEPackages();
-  }, []);
+    
+    // Add mobile viewport optimizations
+    if (isMobileDevice) {
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      
+      const handleResize = () => {
+        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      };
+      
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, [isMobileDevice]);
 
-  const fetchLTEPackages = async () => {
+  const fetchLTEPackages = async (isRefresh = false) => {
     try {
-      setLoading(true);
+      if (isRefresh) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
+      }
+      
       const response = await packageService.getLTEPackages();
       
       console.log('LTE API Response:', response.data);
@@ -44,6 +69,14 @@ const PackageSelectionPage = () => {
       setProviders(defaultProviders);
     } finally {
       setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  // Pull to refresh functionality for mobile
+  const handleRefresh = async () => {
+    if (isMobileDevice) {
+      await fetchLTEPackages(true);
     }
   };
 
@@ -155,35 +188,22 @@ const PackageSelectionPage = () => {
 
   const handleProviderSelect = (index) => {
     setCurrentProviderIndex(index);
-    scrollToProvider(index);
+    setIsScrolling(true);
+    setTimeout(() => setIsScrolling(false), 500);
   };
 
   const scrollToProvider = (index) => {
-    if (!providerSliderRef.current || !providers[index]) return;
-    
-    setIsScrolling(true);
-    
-    const slider = providerSliderRef.current;
-    const cards = slider.querySelectorAll('.provider-card');
-    const card = cards[index];
-    
-    if (card) {
-      const sliderRect = slider.getBoundingClientRect();
-      const cardRect = card.getBoundingClientRect();
-      
-      const cardCenter = card.offsetLeft + (cardRect.width / 2);
-      const sliderCenter = sliderRect.width / 2;
-      const targetScrollLeft = cardCenter - sliderCenter;
+    if (providerSliderRef.current) {
+      const slider = providerSliderRef.current;
+      const slideWidth = slider.querySelector('.provider-card')?.offsetWidth || 200;
+      const spacing = 20;
+      const scrollLeft = (slideWidth + spacing) * index;
       
       slider.scrollTo({
-        left: Math.max(0, targetScrollLeft),
+        left: scrollLeft,
         behavior: 'smooth'
       });
     }
-    
-    setTimeout(() => {
-      setIsScrolling(false);
-    }, 500);
   };
 
   const handlePrevProvider = () => {
@@ -223,6 +243,15 @@ const PackageSelectionPage = () => {
     }
   };
 
+  // Determine most popular package for highlighting
+  const getMostPopularPackageIndex = (packages) => {
+    if (!packages || packages.length === 0) return -1;
+    
+    // Simple logic: middle package or lowest price with good features
+    const midIndex = Math.floor(packages.length / 2);
+    return midIndex;
+  };
+
   if (loading) {
     return (
       <div className="package-selection-page">
@@ -240,7 +269,7 @@ const PackageSelectionPage = () => {
         <div className="error-container">
           <h2>Error Loading Packages</h2>
           <p>{error}</p>
-          <button onClick={fetchLTEPackages} className="retry-button">
+          <button onClick={() => fetchLTEPackages()} className="retry-button">
             Try Again
           </button>
         </div>
@@ -251,91 +280,167 @@ const PackageSelectionPage = () => {
   const currentProvider = providers[currentProviderIndex];
 
   return (
-    <div className="package-selection-page">
-      <header className="lte-header">
+    <div className={`package-selection-page ${isMobileDevice ? 'mobile-optimized' : ''}`}>
+      <motion.header 
+        className="lte-header"
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="container">
-          <h1 className="heading-gradient">
+          <motion.h1 
+            className="heading-gradient"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             LTE, 5G & Mobile Data Packages
-          </h1>
-          <p className="subheading">Fast, reliable connectivity for home and business. No contracts, no hassle.</p>
+          </motion.h1>
+          <motion.p 
+            className="subheading"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            Fast, reliable connectivity for home and business. No contracts, no hassle.
+          </motion.p>
         </div>
-      </header>
+      </motion.header>
 
-      <section className="lte-section">
+      <motion.section 
+        className="lte-section"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+      >
         <div className="container">
           <div className="title-container">
-            <h2 className="section-title">Choose a Provider</h2>
+            <motion.h2 
+              className="section-title"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              Choose a Provider
+            </motion.h2>
           </div>
           
           {providers.length > 0 ? (
             <>
-              <div className="provider-selector">
-                <button 
-                  className="nav-arrow nav-prev" 
-                  onClick={handlePrevProvider}
-                  aria-label="Previous provider"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                    <path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                  </svg>
-                </button>
-                
-                <div className="provider-slider" ref={providerSliderRef}>
-                  {providers.map((provider, index) => (
+              {/* Mobile/Tablet Carousel */}
+              {isMobileDevice ? (
+                <MobileCarousel
+                  providers={providers}
+                  currentIndex={currentProviderIndex}
+                  onProviderSelect={handleProviderSelect}
+                  className="mobile-provider-carousel"
+                />
+              ) : (
+                /* Desktop Provider Selector */
+                <div className="provider-selector">
+                  <button 
+                    className="nav-arrow nav-prev" 
+                    onClick={handlePrevProvider}
+                    aria-label="Previous provider"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                      <path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                    </svg>
+                  </button>
+                  
+                  <div className="provider-slider" ref={providerSliderRef}>
+                    {providers.map((provider, index) => (
+                      <div
+                        key={provider.slug}
+                        className={`provider-card ${index === currentProviderIndex ? 'active' : ''}`}
+                        onClick={() => handleProviderSelect(index)}
+                      >
+                        {provider.logo ? (
+                          <img 
+                            src={provider.logo} 
+                            alt={provider.name} 
+                            className="provider-logo"
+                          />
+                        ) : (
+                          <div className="provider-text">{provider.name}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <button 
+                    className="nav-arrow nav-next" 
+                    onClick={handleNextProvider}
+                    aria-label="Next provider"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                      <path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                    </svg>
+                  </button>
+                </div>
+              )}
+              
+              {!isMobileDevice && (
+                <div className="provider-indicators">
+                  {providers.map((_, index) => (
                     <div
-                      key={provider.slug}
-                      className={`provider-card ${index === currentProviderIndex ? 'active' : ''}`}
+                      key={index}
+                      className={`indicator ${index === currentProviderIndex ? 'active' : ''}`}
                       onClick={() => handleProviderSelect(index)}
-                    >
-                      {provider.logo ? (
-                        <img 
-                          src={provider.logo} 
-                          alt={provider.name} 
-                          className="provider-logo"
-                        />
-                      ) : (
-                        <div className="provider-text">{provider.name}</div>
-                      )}
-                    </div>
+                    />
                   ))}
                 </div>
-                
-                <button 
-                  className="nav-arrow nav-next" 
-                  onClick={handleNextProvider}
-                  aria-label="Next provider"
+              )}
+              
+              <AnimatePresence mode="wait">
+                <motion.div 
+                  key={currentProviderIndex}
+                  className={`packages-grid ${isMobileDevice ? 'mobile-packages-grid' : ''}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                    <path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                  </svg>
-                </button>
-              </div>
-              
-              <div className="provider-indicators">
-                {providers.map((_, index) => (
-                  <div
-                    key={index}
-                    className={`indicator ${index === currentProviderIndex ? 'active' : ''}`}
-                    onClick={() => handleProviderSelect(index)}
-                  />
-                ))}
-              </div>
-              
-              <div className="packages-grid">
-                {currentProvider && currentProvider.packages.length > 0 ? (
-                  currentProvider.packages.map((pkg) => (
-                    <LTEPackageCard
-                      key={pkg.id}
-                      package={pkg}
-                      onSelect={handlePackageSelect}
-                    />
-                  ))
-                ) : (
-                  <div className="no-packages">
-                    No packages found for this provider.
-                  </div>
-                )}
-              </div>
+                  {currentProvider && currentProvider.packages.length > 0 ? (
+                    currentProvider.packages.map((pkg, index) => {
+                      const mostPopularIndex = getMostPopularPackageIndex(currentProvider.packages);
+                      
+                      return isMobileDevice ? (
+                        <MobileLTEPackageCard
+                          key={pkg.id}
+                          package={pkg}
+                          onSelect={handlePackageSelect}
+                          index={index}
+                          isPopular={index === mostPopularIndex}
+                        />
+                      ) : (
+                        <LTEPackageCard
+                          key={pkg.id}
+                          package={pkg}
+                          onSelect={handlePackageSelect}
+                        />
+                      );
+                    })
+                  ) : (
+                    <div className="no-packages">
+                      No packages found for this provider.
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Mobile Pull-to-Refresh Indicator */}
+              {refreshing && isMobileDevice && (
+                <motion.div 
+                  className="refresh-indicator"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                >
+                  <LoadingSpinner />
+                  <p>Refreshing packages...</p>
+                </motion.div>
+              )}
             </>
           ) : (
             <div className="no-packages">
@@ -343,7 +448,7 @@ const PackageSelectionPage = () => {
             </div>
           )}
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };
