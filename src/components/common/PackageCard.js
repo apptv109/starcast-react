@@ -1,12 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './PackageCard.css';
 
 const PackageCard = ({ package: pkg, provider, onSelect }) => {
+  const navigate = useNavigate();
+  
   if (!pkg) return null;
 
   const handleClick = () => {
     if (onSelect) {
       onSelect(pkg);
+    } else {
+      // Navigate to signup page with package ID
+      navigate(`/signup?package_id=${pkg.id}`);
     }
   };
 
