@@ -15,6 +15,7 @@ export const packageService = {
   getFibrePackages: () => api.get('/starcast/v1/packages/fibre'),
   getLTEPackages: () => api.get('/starcast/v1/packages/lte'),
   getPackageById: (id) => api.get(`/wp/v2/fibre_packages/${id}`), // WordPress default endpoint
+  getLTEPackageById: (id) => api.get(`/wp/v2/lte_packages/${id}`), // WordPress LTE endpoint
 };
 
 // Booking services using WordPress REST API
