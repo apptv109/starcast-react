@@ -13,6 +13,7 @@ import LTEPage from './pages/LTEPage';
 import BookingPage from './pages/BookingPage';
 import AdminPage from './pages/AdminPage';
 import SignupPage from './pages/SignupPage';
+import LTESignupPage from './pages/LTESignupPage';
 import PackageSelectionPage from './pages/PackageSelectionPage';
 import PromoDealsPage from './pages/PromoDealsPage';
 
@@ -29,6 +30,7 @@ function App() {
             <Route path="/booking" element={<BookingPage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/lte-signup" element={<LTESignupPage />} />
             <Route path="/package-selection" element={<PackageSelectionPage />} />
             <Route path="/promo-deals" element={<PromoDealsPage />} />
           </Routes>

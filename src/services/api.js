@@ -73,6 +73,45 @@ export const submitFibreApplication = async (applicationData) => {
   }
 };
 
+// LTE application submission service
+export const submitLTEApplication = async (applicationData) => {
+  try {
+    // Create FormData for file upload
+    const formData = new FormData();
+    
+    // Add all fields to FormData
+    if (applicationData instanceof FormData) {
+      // If already FormData, use as is
+      const response = await axios.post(`${WP_API_BASE_URL}/starcast/v1/lte-application`, applicationData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } else {
+      // Convert object to FormData
+      Object.keys(applicationData).forEach(key => {
+        if (applicationData[key] !== null && applicationData[key] !== undefined) {
+          formData.append(key, applicationData[key]);
+        }
+      });
+      
+      const response = await axios.post(`${WP_API_BASE_URL}/starcast/v1/lte-application`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    }
+  } catch (error) {
+    console.error('Error submitting LTE application:', error);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Failed to submit application. Please try again.',
+    };
+  }
+};
+
 // Promo code validation service
 export const validatePromoCode = async (promoCode, packageId, packageType) => {
   try {
@@ -98,5 +137,6 @@ export default {
   signupService,
   contactService,
   submitFibreApplication,
+  submitLTEApplication,
   validatePromoCode,
 }; 
